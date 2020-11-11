@@ -24,6 +24,7 @@ public class MenuView : MonoBehaviour
 
     void FindRoomClick()
     {
+        Launcher.instance.FindRoomViewClick();
         Debug.Log("Back to MenuView");
     }
 }
