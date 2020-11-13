@@ -23,6 +23,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     GameObject setNickNameView;
     [SerializeField]
     GameObject findRoomView;
+    [SerializeField]
+    FindRoomView findRoomViewObj;
 
     void Awake()
     {
@@ -53,10 +55,18 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         loading.SetActive(false);
-        setNickNameView.SetActive(true);
+        if(string.IsNullOrEmpty(PhotonNetwork.NickName))
+        {
+            setNickNameView.SetActive(true);
+        }
+        else
+        {
+            menuView.SetActive(true);
+        }
         //menuView.SetActive(true);
         Debug.Log("Joined to lobby");
     }
+
 
     public void CreateRoom()
     {
@@ -125,5 +135,16 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         findRoomView.SetActive(false);
         menuView.SetActive(true);
+    }
+
+    public void JoinRoomClick(string roomName)
+    {
+        findRoomView.SetActive(false);
+        PhotonNetwork.JoinRoom(roomName);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> rooms)
+    {
+        findRoomViewObj.FillRoomList(rooms);
     }
 }
