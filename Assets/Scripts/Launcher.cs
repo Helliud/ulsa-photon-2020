@@ -28,15 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if(!instance)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        instance = this;
     }
 
     void Start()
@@ -50,6 +42,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connected to master server");
         PhotonNetwork.JoinLobby();
+        PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        roomViewObj.startGameVisible(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnJoinedLobby()
@@ -65,6 +63,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
         //menuView.SetActive(true);
         Debug.Log("Joined to lobby");
+        roomViewObj.FillPlayerListContainer(PhotonNetwork.PlayerList);
+
     }
 
 
@@ -93,16 +93,19 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomView.SetActive(true);
         Debug.Log($"Joined to: {PhotonNetwork.CurrentRoom.Name}");
         roomViewObj.FillPlayerListContainer(PhotonNetwork.PlayerList);
+        roomViewObj.startGameVisible(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnPlayerEnteredRoom(Player player)
     {
         roomViewObj.AddPlayerToListContainer(player);
+
     }
 
     public override void OnPlayerLeftRoom(Player player)
     {
         roomViewObj.RemovePlayerInListContainer(player);
+
     }
 
     public void LeaveCurrentRoom()
@@ -146,5 +149,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnRoomListUpdate(List<RoomInfo> rooms)
     {
         findRoomViewObj.FillRoomList(rooms);
+    }
+
+    public void CreateGame()
+    {
+        PhotonNetwork.LoadLevel(1);
     }
 }

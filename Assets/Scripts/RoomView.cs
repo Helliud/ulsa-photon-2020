@@ -15,10 +15,13 @@ public class RoomView : MonoBehaviour
     RectTransform playerListContainer;
     [SerializeField]
     Object srcPlayerNickNameItem;
+    [SerializeField]
+    Button btnStartGame;
 
     void Awake()
     {
         btnLeaveRoom.onClick.AddListener(LeaveCurrentRoom);
+        btnStartGame.onClick.AddListener(Launcher.instance.CreateGame);
     }
 
     public void SetRoomName(string roomName) => txtRoomName.text = roomName;
@@ -27,6 +30,8 @@ public class RoomView : MonoBehaviour
     {
         SetRoomName(Launcher.instance.CurrentRoomName);
     }
+
+    public void startGameVisible(bool visible) => btnStartGame.gameObject.SetActive(visible);
 
     void LeaveCurrentRoom()
     {
@@ -51,6 +56,7 @@ public class RoomView : MonoBehaviour
 
     public void RemovePlayerInListContainer(Player player)
     {
+
         foreach(GameObject go in playerListContainer)
         {
             TMP_Text playerNickNameItem = go.GetComponent<TMP_Text>();
